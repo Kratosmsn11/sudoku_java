@@ -25,33 +25,20 @@ public class Main {
     //   {8,1,4,2,5,3,7,6,9},
     //   {6,9,5,4,1,7,3,8,0} // last one should be 2
     // };
-    Scanner scan = new Scanner(System.in);
     int numOfZeros = countZeros(grid);
     while (true) {
       showGrid(grid);
-      System.out.println("Enter the row column value like 0 0 7 (index: 0-8) (value: 1-9) or quit");
-      String input = scan.next();
-      if (input.equals("quit")) {
-        break;
-      }
 
-      int row = Integer.parseInt(input);
-      int column = scan.nextInt();
-      int value = scan.nextInt();
-      System.out.println("row idx: " + row+ ", column idx: "+column + ", val: " +value);
+      // input
+      int[] inputData = getInput();
+      int row = inputData[0];
+      int column = inputData[1];
+      int value = inputData[2];
       
-      if (isNumberExisted(grid, row, column)) {
-        System.out.println("The selected grid is already Exsisted.");
-        continue;
-      }
+      if (isValueZero(value) || isNumberExisted(grid, row, column)) continue;
       putNumberToGrid(grid, row, column, value);
-      numOfZeros--;
-      if (numOfZeros == 0) {
-        if (solveBoard(grid)) {
-          System.out.println("Congrats!!!!!");
-        } else {
-          System.out.println("Wrong answer");
-        }
+      if (--numOfZeros == 0) {
+        System.out.println(solveBoard(grid) ? "Congrats!!!!!" : "Wrong answer");
         System.exit(0);
       }
     }
@@ -66,8 +53,30 @@ public class Main {
       System.out.println();
     }
   }
+
+  private static int[] getInput() {
+    Scanner scan = new Scanner(System.in);
+    System.out.println("Enter the row column value like 0 0 7 (index: 0-8) (value: 1-9) or quit");
+    String input = scan.next();
+    if (input.equals("quit")) System.exit(0);;
+    int row = Integer.parseInt(input);
+    int column = scan.nextInt();
+    int value = scan.nextInt();
+    System.out.println("row idx: " + row+ ", column idx: "+column + ", val: " +value);
+    return new int[] {row, column, value};
+  }
+  private static boolean isValueZero(int value) {
+    if (value == 0) {
+      System.out.println("0 is invalid number");
+      return true;
+    }
+    return false;
+  }
   private static boolean isNumberExisted(int[][] grid, int row, int column) {
-    if (grid[row][column] != 0) return true;
+    if (grid[row][column] != 0) {
+      System.out.println("The selected grid is already Exsisted.");
+      return true;
+    }
     return false;
   }
   private static void putNumberToGrid(int[][] grid, int row, int column, int value) {
